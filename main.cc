@@ -18,7 +18,7 @@ void appendDataOfEmployee(string first, string last, int id, int typeOfAppend);
 
 void writeToFile(string first, string last, int id);
 
-bool checkIfEmployeeExists(string first, string last, int id);
+int checkIfEmployeeExists(string first, string last, int id);
 
 string greeting();
 
@@ -70,7 +70,6 @@ void clearZeros(){
 	int ids[100];
 	int i = 0, j = 0;
 	while(!readWorker.eof()){
-		print("In the First Loop!");
 		readWorker >> Employees[i][j];
 		j++;
 		readWorker >> Employees[i][j];
@@ -132,29 +131,25 @@ void appendDataOfEmployee(string first, string last, int id, int typeOfAppend){
 	//forLaterUse change rate 1
 	//change of hours 2
 	if(typeOfAppend == -3){
-		print("Listing what is currently in the file");
-		for(i = 0; i < max - 1; i++){
-			for(j = 0; j < 2; j++){
-				cout << Employees[i][j] << " ";
-			}
-			cout << ids[i] << endl;
-		}
-		print("List Ended");
+		//Two use cases:
+			//One is for a user to delete their own data (Maybe).
+			//Two is for admin to clean up users.
+	//	for(i = 0; i < max - 1; i++){
+	//		for(j = 0; j < 2; j++){
+	//			cout << Employees[i][j] << " ";
+	//		}
+	//		cout << ids[i] << endl;
+	//	}
 		for(i = 0; i < max; i++){
 			if(Employees[i][0].compare(first) == 0 && Employees[i][1].compare(last) == 0 && ids[i] == id){
 				for(int k = i; k < max; k++){
-					print("loop count");
-					cout << Employees[k][0] << " " << Employees[k+1][0] << endl;
 					Employees[k][0] = Employees[k+1][0];
-					cout << Employees[k][1] << " " << Employees[k+1][1] << endl;
 					Employees[k][1] = Employees[k+1][1];
-					cout << ids[k] << " " << ids[k+1]<< endl;
 					ids[k] = ids[k+1];
 				}
 				break;
 			}
 		}
-
 		ofstream writeNew;
 		writeNew.open("employees.txt", ios::out | ios::trunc);
 		//asumming opens fine.
@@ -167,6 +162,7 @@ void appendDataOfEmployee(string first, string last, int id, int typeOfAppend){
 		clearZeros();
 	}
 	else if(typeOfAppend == -2){
+		//Intended for Admin use.
 
 	}
 	else if(typeOfAppend == -1){
@@ -202,7 +198,7 @@ void writeToFile (string first, string last, int id){
 	return;
 }
 
-bool checkIfEmployeeExists(string first, string last, int id){
+int checkIfEmployeeExists(string first, string last, int id){
 	ifstream readWorker;
 	readWorker.open("employees.txt", fstream::in | fstream::out | fstream::app);
 	if(readWorker.is_open()){
@@ -234,30 +230,33 @@ bool checkIfEmployeeExists(string first, string last, int id){
 		if(Employees[i][0].compare(first) == 0 && Employees[i][1].compare(last) == 0 && id == ids[i]){
 			readWorker.close();
 			print("------File Has Been Closed------");
-			return true;
+			return 1;
 		}else if(Employees[i][0].compare(first) == 0 && Employees[i][1].compare(last) == 0 && id != ids[i]){
-			print("Your name is in the system but your ID is not.");
-			print("Changing your ID on file....");
+			print("The name you inputed and the ID you inputed doesn't match if you think this is a mistake please constact the admin.");
+			cout << "\tInputed Name: " << first + " " + last << endl;
 			cout << "\tInputed ID: " << id << endl;
-			if(checkIfCorrect()){
-				readWorker.close();
-				ofstream writeWorker;
-				writeWorker.close();
-			}
-		}else if(Employees[i][0].compare(first) != 0 && Employees[i][1].compare(last) != 0 && id == ids[i]){
+			print("Rerunning program....");
+			cout << endl << endl;
+			return 2;
+		}
+		else if(Employees[i][0].compare(first) != 0 && Employees[i][1].compare(last) != 0 && id == ids[i]){
 			print("This ID is already in use! If you think this is a mistake please contact the admin.");
-			print("For now please try entering another ID by re-running the program.");
-			exit(EXIT_FAILURE);
+			print("For now please try entering another ID.");
+			print("Rerunning program....");
+			cout << endl << endl;
+			return 2;
 		}
 	}
 	print("------File Has Been Closed------");
 	readWorker.close();
-	return false;
+	return 0;
 }
 
 string greeting(){
 	string firstName, lastName;
-	int id, response = 0;
+	int id, response;
+Top:
+	response = 0;
 	print("Welcome! To continue using the program please identify yourself.");
 	while (response == 0){
 	print("1) Please type in your first and last name:");
@@ -265,6 +264,11 @@ string greeting(){
 	lastName = inputString();
 	print("2) Please type in your work ID:");
 	cin >> id;
+	if(id > 9999 || id < 1){
+		print("Error: ID is invalid. Please enter only a 4 digit number. (0001 to 9999)");
+		cout << endl << endl;
+		goto Top;
+	}
 	cout << "\tYou entered: \n\t\t" << firstName << " " << lastName << endl << "\t\tID: " << id << endl;
 	response = checkIfCorrect();
 	}
@@ -272,18 +276,22 @@ string greeting(){
 	transform(lastName.begin(), lastName.end(), lastName.begin(), ::toupper);
 	//Create a limitation for ids to be at least up to 4 digits.
 	//Once correct, write to file.
-	if(!checkIfEmployeeExists(firstName, lastName, id)){
+	response = checkIfEmployeeExists(firstName, lastName, id);
+	if(response == 0){
 		print("You are not yet in the system! Saving you for future inquries...");
 		writeToFile(firstName, lastName, id);
 	}
-	else{
+	else if(response == 1){//The first and last names along with the id correspond.
 		cout << "\n------Welcome back " << firstName + " " + lastName + "!------" << endl;
+		//Once data has been confirmed user may augment their data.
 		print("Would you like to delete your data?");
 		if(checkIfCorrect()){
 			appendDataOfEmployee(firstName, lastName, id, -3);
 		}else{
 			print("Okay your data will not be deleted.");
 		}
+	}else if(response == 2){
+		goto Top;
 	}
 	return firstName + " " + lastName;
 }
