@@ -237,13 +237,35 @@ int checkIfEmployeeExists(string first, string last, int id){
 			cout << "\tInputed ID: " << id << endl;
 			print("Rerunning program....");
 			cout << endl << endl;
+			readWorker.close();
+			print("------File Has Been Closed------");
 			return 2;
+		}
+		else if(Employees[i][0].compare(last) == 0 && Employees[i][1].compare(first) == 0 && id == ids[i]){
+			print("You may have reversed your first name and last name.");
+			cout << "You inputed: " << first + " " + last << " where it should be " << last + " " + first + "." << endl;
+			cout << "Do you want to reverse your input to " << last + " " + first << "?" << endl;
+			if(checkIfCorrect()){
+				print("------File Has Been Closed------");
+				readWorker.close();
+				return 1;
+			}
+			else{
+				print("If you think this is a mistake please contact the admin.");
+				print("Rerunning program..");
+				cout << endl << endl;
+				readWorker.close();
+				print("------File Has Been Closed------");
+				return 2;
+			}
 		}
 		else if(Employees[i][0].compare(first) != 0 && Employees[i][1].compare(last) != 0 && id == ids[i]){
 			print("This ID is already in use! If you think this is a mistake please contact the admin.");
 			print("For now please try entering another ID.");
 			print("Rerunning program....");
 			cout << endl << endl;
+			readWorker.close();
+			print("------File Has Been Closed------");
 			return 2;
 		}
 	}
@@ -264,8 +286,8 @@ Top:
 	lastName = inputString();
 	print("2) Please type in your work ID:");
 	cin >> id;
-	if(id > 9999 || id < 1){
-		print("Error: ID is invalid. Please enter only a 4 digit number. (0001 to 9999)");
+	if(id > 999999 || id < 1){
+		print("Error: ID is invalid. Please enter a positive 6 digit number. (000001 to 999999)");
 		cout << endl << endl;
 		goto Top;
 	}
