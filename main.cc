@@ -3,6 +3,7 @@
 #include <fstream>
 #include <stdlib.h>
 #include <algorithm>
+#include <cstring>
 
 using namespace std;
 
@@ -19,6 +20,8 @@ void appendDataOfEmployee(string first, string last, int id, int typeOfAppend);
 void writeToFile(string first, string last, int id);
 
 int checkIfEmployeeExists(string first, string last, int id);
+
+bool checkForSpecial(string first, string last);
 
 string greeting();
 
@@ -274,6 +277,35 @@ int checkIfEmployeeExists(string first, string last, int id){
 	return 0;
 }
 
+bool checkForSpecial(string first, string last){
+	int nFirst = first.length(), nLast = last.length();
+	char char_First[nFirst], char_Last[nLast];
+	strcpy(char_First, first.c_str());
+	strcpy(char_Last, last.c_str());
+
+	for(int i = 0; i < nFirst; i++){
+		//cout << i << endl;
+		if(char_First[i] == '/' || char_First[i] == '?' || char_First[i] == '(' || char_First[i] == ')' || char_First[i] == '!' || char_First[i] == '^' || char_First[i] == '.'  || char_First[i] == ','   || char_First[i] == '&'  || char_First[i] == '*'  || char_First[i] == '%'  || char_First[i] == '$'  || char_First[i] == '#' || char_First[i] == '@'  || char_First[i] == '{'  || char_First[i] == '}'  || char_First[i] == ']' || char_First[i] == '['  || char_First[i] == ';'  || char_First[i] == ':'  || char_First[i] == '='  || char_First[i] == '+'  || char_First[i] == '-'  || char_First[i] == '_'  || char_First[i] == '>'  || char_First[i] == '<'  || char_First[i] == '\\'  || char_First[i] == '\''  || char_First[i] == '1'  || char_First[i] == '2'  || char_First[i] == '3'  || char_First[i] == '4'  || char_First[i] == '5'  || char_First[i] == '5'  || char_First[i] == '6'  || char_First[i] == '7'  || char_First[i] == '8'  || char_First[i] == '9'   || char_First[i] == '0' || char_First[i] == '~'  || char_First[i] == '`'   ){
+			print("--------------------------------------");
+			print("Illegal character found in FIRST NAME.");
+			print("--------------------------------------");
+			return true;
+		}
+	}
+	for(int i = 0; i < nLast; i++){
+		if(char_Last[i] == '/' || char_Last[i] == '?' || char_Last[i] == '(' || char_Last[i] == ')' || char_Last[i] == '!' || char_Last[i] == '^' || char_Last[i] == '.'  || char_Last[i] == ','   || char_Last[i] == '&'  || char_Last[i] == '*'  || char_Last[i] == '%'  || char_Last[i] == '$'  || char_Last[i] == '#' || char_Last[i] == '@'  || char_Last[i] == '{'  || char_Last[i] == '}'  || char_Last[i] == ']' || char_Last[i] == '['  || char_Last[i] == ';'  || char_Last[i] == ':'  || char_Last[i] == '='  || char_Last[i] == '+'  || char_Last[i] == '-'  || char_Last[i] == '_'  || char_Last[i] == '>'  || char_Last[i] == '<'  || char_Last[i] == '\\'  || char_Last[i] == '\''  || char_Last[i] == '1'  || char_Last[i] == '2'  || char_Last[i] == '3'  || char_Last[i] == '4'  || char_Last[i] == '5'  || char_Last[i] == '5'  || char_Last[i] == '6'  || char_Last[i] == '7'  || char_Last[i] == '8'  || char_Last[i] == '9'   || char_Last[i] == '0' || char_Last[i] == '~'  || char_Last[i] == '`'   ){
+			print("--------------------------------------");
+			print("Illegal character found in LAST NAME.");
+			print("--------------------------------------");
+			return true;
+		}
+	}
+	cout << endl;
+	print("Acceptable Input.....");
+	cout << endl;
+	return false;
+}
+
 string greeting(){
 	string firstName, lastName;
 	int id, response;
@@ -284,6 +316,12 @@ Top:
 	print("1) Please type in your first and last name:");
 	firstName = inputString();
 	lastName = inputString();
+	if(checkForSpecial(firstName, lastName)){
+		print("Error: Illegal character located....");
+		print("Try again, please don't use any illegal characters.");
+		cout << endl << endl;
+		goto Top;
+	}
 	print("2) Please type in your work ID:");
 	cin >> id;
 	if(id > 999999 || id < 1){
@@ -291,12 +329,12 @@ Top:
 		cout << endl << endl;
 		goto Top;
 	}
+	transform(firstName.begin(), firstName.end(), firstName.begin(), ::toupper);
+	transform(lastName.begin(), lastName.end(), lastName.begin(), ::toupper);
 	cout << "\tYou entered: \n\t\t" << firstName << " " << lastName << endl << "\t\tID: " << id << endl;
 	response = checkIfCorrect();
 	}
-	transform(firstName.begin(), firstName.end(), firstName.begin(), ::toupper);
-	transform(lastName.begin(), lastName.end(), lastName.begin(), ::toupper);
-	//Create a limitation for ids to be at least up to 4 digits.
+	//Create a limitation for ids to be at least up to 6 digits.
 	//Once correct, write to file.
 	response = checkIfEmployeeExists(firstName, lastName, id);
 	if(response == 0){
