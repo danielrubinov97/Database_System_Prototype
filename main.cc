@@ -286,6 +286,7 @@ bool checkForSpecial(string first, string last){
 	for(int i = 0; i < nFirst; i++){
 		//cout << i << endl;
 		if(char_First[i] == '/' || char_First[i] == '?' || char_First[i] == '(' || char_First[i] == ')' || char_First[i] == '!' || char_First[i] == '^' || char_First[i] == '.'  || char_First[i] == ','   || char_First[i] == '&'  || char_First[i] == '*'  || char_First[i] == '%'  || char_First[i] == '$'  || char_First[i] == '#' || char_First[i] == '@'  || char_First[i] == '{'  || char_First[i] == '}'  || char_First[i] == ']' || char_First[i] == '['  || char_First[i] == ';'  || char_First[i] == ':'  || char_First[i] == '='  || char_First[i] == '+'  || char_First[i] == '-'  || char_First[i] == '_'  || char_First[i] == '>'  || char_First[i] == '<'  || char_First[i] == '\\'  || char_First[i] == '\''  || char_First[i] == '1'  || char_First[i] == '2'  || char_First[i] == '3'  || char_First[i] == '4'  || char_First[i] == '5'  || char_First[i] == '5'  || char_First[i] == '6'  || char_First[i] == '7'  || char_First[i] == '8'  || char_First[i] == '9'   || char_First[i] == '0' || char_First[i] == '~'  || char_First[i] == '`'   ){
+			//Need to quantify effency with this method. Maybe using a loop with a character array of illegal characters would be more efficient.
 			print("--------------------------------------");
 			print("Illegal character found in FIRST NAME.");
 			print("--------------------------------------");
